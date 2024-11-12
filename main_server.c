@@ -11,6 +11,7 @@
 #define MAX 85
 #define PORT 9090
 #define BUF_SIZE 1024
+#define MAX_CLIENTS 20
 
 void error_handling(char *message);
 
@@ -100,7 +101,7 @@ void handle_client(int cli_sock){
             "Content-Type: text/html; charset=UTF-8\r\n"
             "Connection: close\r\n"
             "\r\n"
-            "<html><body><h1>데이터 오류 발생</h1></body></html>");
+            "데이터 오류 발생\n");
     }
 
     write(cli_sock, response, strlen(response));
@@ -112,6 +113,9 @@ int main(void){
     int serv_sock, cli_sock;
     struct sockaddr_in serv_addr, cli_addr;
     socklen_t cli_addr_len;
+    int max_fd, active, i;
+    int client_sockets[MAX_CLIENTS];
+    fd_set read_fds;
 
     if (wiringPiSetup() == -1) {
         error_handling("wiringPiSetup() error");
@@ -136,15 +140,57 @@ int main(void){
 
     printf("Server running on port %d....\n", PORT);
 
-
+    memset(client_sockets, 0x00, sizoef(client_sockets));
     while (1) {
-        cli_addr_len = sizeof(cli_addr);
-        cli_sock = accept(serv_sock, (struct sockaddr*)&cli_addr, &cli_addr_len);
-        if(cli_sock==-1){
-            perror("accpet() error");
+        FD_ZERO(&read_fds);
+        FD_SET(serv_sock, &read_fds); //서버 소켓 감시 시작
+        max_fd = serv_sock;
+        
+        for(i=0; i<MAX_CLIENTS; i++){
+            int sd = client_sockets[i];
+            if(sd>0){
+                FD_SET(sd, &read_fds);
+            }  
+            if(sd > max_fd){
+                max_fd = sd;
+            }
+        }
+
+        active = select(max_fd+1, &read_fds, 0, 0, 0);
+        if(active<0){
+            error_handling("select() error");
             continue;
         }
-        handle_client(cli_sock);
+        
+        if(FD_ISSET(serv_sock, &read_fds)){
+            cli_addr_len = sizeof(cli_addr);
+            cli_sock = accept(serv_sock, (struct sockaddr*)&cli_addr, &cli_addr_len);
+            if(cli_sock==-1){
+                error_handling("accept() error");
+                continue;
+            }
+        
+        printf("새로운 클라이언트 연결. client fd : %d, ip : %s, port : %d\n",
+                cli_sock, inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port));
+
+        for(i=0; i<MAX_CLIENTS; i++){
+            if(client_sockets[i]==0){
+                client_sockets[i] = cli_sock;
+                printf("클라이언트 소켓 [%d]에 추가됨\n", i);
+                break;
+                }
+            }
+        }
+
+        for(i=0; i< MAX_CLIENTS; i++){
+            int sd = client_sockets[i];
+            
+            if(FD_ISSET(sd, &read_fds)){
+
+                handle_client(sd);
+                client_sockets[i] = 0;
+            }
+        }
 
     }
 
