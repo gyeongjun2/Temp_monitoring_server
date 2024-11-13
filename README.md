@@ -36,9 +36,7 @@
 
 - DHT22 센서를 통해 실시간으로 온도와 습도 데이터를 측정하여 라즈베리파이 서버로 전달.
 
-![323233](https://github.com/user-attachments/assets/a0e282ae-6e29-413a-907b-b2a09b6d57c9)
-
-구성품
+<img src="https://github.com/user-attachments/assets/a0e282ae-6e29-413a-907b-b2a09b6d57c9.png" width="200" height="400"/>
 
 - Raspberry pi 4 model B
 - DHT22 온습도 센서
