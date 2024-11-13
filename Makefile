@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall
 TARGET = main_program
 
-SRCS = main.c database.c
+SRCS = main_server.c database.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(TARGET)
