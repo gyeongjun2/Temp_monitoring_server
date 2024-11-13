@@ -1,4 +1,4 @@
-# 온습도 모니터링 서버
+# 소켓 프로그래밍을 활용한 라즈베리파이 기반 온습도 모니터링 서버 프로그램
 
 ## 프로젝트 주제
 
@@ -36,7 +36,7 @@
 
 - DHT22 센서를 통해 실시간으로 온도와 습도 데이터를 측정하여 라즈베리파이 서버로 전달.
 
-<img src="https://github.com/user-attachments/assets/a0e282ae-6e29-413a-907b-b2a09b6d57c9" width="200" height="400"/>
+<img src="https://github.com/user-attachments/assets/a0e282ae-6e29-413a-907b-b2a09b6d57c9" width="300" height="400"/>
 
 - Raspberry pi 4 model B
 - DHT22 온습도 센서
@@ -51,36 +51,31 @@
 - 클라이언트가 서버로 접속 시 새로운 클라이언트 소켓 할당
 - select()를 사용하여 다중 클라이언트의 요청을 수용
 
-![image](https://github.com/user-attachments/assets/3eba4851-7390-4f8a-b68e-6cc5f8fc3468)
 
+<img src="https://github.com/user-attachments/assets/3eba4851-7390-4f8a-b68e-6cc5f8fc3468" width="500" height="400"/>
 포트번호 9090으로 서버 실행
 
-![image 1](https://github.com/user-attachments/assets/cd0aa79f-a42e-437d-ad61-ca5742d772f4)
-
+<img src="https://github.com/user-attachments/assets/cd0aa79f-a42e-437d-ad61-ca5742d772f4" width="500" height="400"/>
 serv_sock 감시 → 들어오는 요청이 있다면 → 클라이언트 소켓 생성 (main_server.c 코드 일부) 
 
 **웹 기반 데이터 제공**
 
 - HTTP 요청에 따라 현재 온습도 데이터를 HTML 페이지로 전송하여 클라이언트가 웹 브라우저를 통해 실시간 데이터 확인 가능
 
-![image 2](https://github.com/user-attachments/assets/c2162a70-f145-4790-bb1f-b75090d203a8)
-
+<img src="https://github.com/user-attachments/assets/c2162a70-f145-4790-bb1f-b75090d203a8" width="400" height="400"/>
 간단한 HTML페이지를 HTTP형식으로 클라이언트로 전송 (main_server.c 코드 일부) 
 
-![%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7_2024-11-13_151910](https://github.com/user-attachments/assets/6ca86442-276a-42c0-95f1-e77689a7be19)
 
+<img src="https://github.com/user-attachments/assets/6ca86442-276a-42c0-95f1-e77689a7be19" width="300" height="400"/>
 
 클라이언트가 웹 브라우저로 접속 시 온습도 데이터를 받아옴(클라이언트와 서버는 같은 로컬 네트워크에 있음)
 
 **데이터베이스 저장 & 조회**
-
-![%EC%98%A8%EC%8A%B5%EB%8F%84%EA%B8%B0%EB%A1%9D%ED%91%9C](https://github.com/user-attachments/assets/2cdfdf62-b157-4356-bde5-710e51666561)
-
+<img src="https://github.com/user-attachments/assets/2cdfdf62-b157-4356-bde5-710e51666561" width="200" height="400"/>
 
 클라이언트가 /history endpoint로 접속시 데이터베이스에 저장된 온습도 데이터를 간단한 HTML 테이블 형식으로 조회 가능
 
-![image 3](https://github.com/user-attachments/assets/b1083a0f-5213-4cc9-bc50-52a9bf3fad6f)
-
+<img src="https://github.com/user-attachments/assets/b1083a0f-5213-4cc9-bc50-52a9bf3fad6f" width="400" height="400"/>
 데이터베이스에 온습도 데이터를 저장하여 이후 조회 및 분석 가능
 
 ### 서버코드
