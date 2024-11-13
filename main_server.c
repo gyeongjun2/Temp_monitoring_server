@@ -94,7 +94,7 @@ void handle_client(int cli_sock) {
 
             snprintf(html_content, sizeof(html_content), 
                      "<html><body>"
-                     "<h1>N4동 413호 온도와 습도</h1>"
+                     "<h1>현재 방의 온도와 습도</h1>"
                      "<p>온도: %.1f &deg;C</p>"
                      "<p>습도: %.1f%%</p>"
                      "</body></html>", temperature, humidity);
@@ -149,8 +149,8 @@ void send_history(int cli_sock) {
              "Content-Type: text/html; charset=UTF-8\r\n"
              "Connection: close\r\n"
              "\r\n"
-             "<html><body><h1>온습도 기록</h1><table border=\"1\">"
-             "<tr><th>Timestamp</th><th>Temperature (°C)</th><th>Humidity (%)</th></tr>");
+             "<html><body><h1>온습도 기록표</h1><table border=\"1\">"
+             "<tr><th>측정시간</th><th>온도 (°C)</th><th>습도 (%)</th></tr>");
     
     
     rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
@@ -186,7 +186,7 @@ int main(void) {
     int max_fd, active, i;
     int client_sockets[MAX_CLIENTS];
     fd_set read_fds;
-
+    int option = 1;
     if (wiringPiSetup() == -1) {
         error_handling("wiringPiSetup() error");
     }
@@ -195,6 +195,8 @@ int main(void) {
     if(serv_sock==-1){
         error_handling("socket() error");
     }
+    setsockopt(serv_sock, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
+    
     memset(&serv_addr, 0x00, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
