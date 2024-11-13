@@ -53,9 +53,11 @@
 
 
 <img src="https://github.com/user-attachments/assets/3eba4851-7390-4f8a-b68e-6cc5f8fc3468" width="500" height="400"/>
+
 포트번호 9090으로 서버 실행
 
 <img src="https://github.com/user-attachments/assets/cd0aa79f-a42e-437d-ad61-ca5742d772f4" width="500" height="400"/>
+
 serv_sock 감시 → 들어오는 요청이 있다면 → 클라이언트 소켓 생성 (main_server.c 코드 일부) 
 
 **웹 기반 데이터 제공**
@@ -63,6 +65,7 @@ serv_sock 감시 → 들어오는 요청이 있다면 → 클라이언트 소켓
 - HTTP 요청에 따라 현재 온습도 데이터를 HTML 페이지로 전송하여 클라이언트가 웹 브라우저를 통해 실시간 데이터 확인 가능
 
 <img src="https://github.com/user-attachments/assets/c2162a70-f145-4790-bb1f-b75090d203a8" width="400" height="400"/>
+
 간단한 HTML페이지를 HTTP형식으로 클라이언트로 전송 (main_server.c 코드 일부) 
 
 
@@ -70,12 +73,15 @@ serv_sock 감시 → 들어오는 요청이 있다면 → 클라이언트 소켓
 
 클라이언트가 웹 브라우저로 접속 시 온습도 데이터를 받아옴(클라이언트와 서버는 같은 로컬 네트워크에 있음)
 
+
 **데이터베이스 저장 & 조회**
+
 <img src="https://github.com/user-attachments/assets/2cdfdf62-b157-4356-bde5-710e51666561" width="200" height="400"/>
 
 클라이언트가 /history endpoint로 접속시 데이터베이스에 저장된 온습도 데이터를 간단한 HTML 테이블 형식으로 조회 가능
 
 <img src="https://github.com/user-attachments/assets/b1083a0f-5213-4cc9-bc50-52a9bf3fad6f" width="400" height="400"/>
+
 데이터베이스에 온습도 데이터를 저장하여 이후 조회 및 분석 가능
 
 ### 서버코드
