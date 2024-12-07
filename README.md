@@ -58,7 +58,7 @@
 - select()를 사용하여 다중 클라이언트의 요청을 수용
 
 
-<img src="https://github.com/user-attachments/assets/3eba4851-7390-4f8a-b68e-6cc5f8fc3468" width="400" height="400"/>
+<img src="https://github.com/user-attachments/assets/3eba4851-7390-4f8a-b68e-6cc5f8fc3468" width="500" height="400"/>
 
 포트번호 9090으로 서버 실행
 
