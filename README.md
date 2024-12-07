@@ -37,6 +37,7 @@
 - DHT22 센서를 통해 실시간으로 온도와 습도 데이터를 측정하여 라즈베리파이 서버로 전달.
 
 라즈베리파이 연결 사진
+
 <img src="https://github.com/user-attachments/assets/a0e282ae-6e29-413a-907b-b2a09b6d57c9" width="300" height="400"/>
 
 - Raspberry pi 4 model B
@@ -46,7 +47,8 @@
 - 10kΩ 저항
 
 라즈베리파이 연결 회로도
-<img src="https://github.com/user-attachments/assets/fc51a723-cab8-4a95-b7eb-bea81e2bd770" width="300" height="400"/>
+
+<img src="https://github.com/user-attachments/assets/fc51a723-cab8-4a95-b7eb-bea81e2bd770" width="500" height="400"/>
 
 브레드보드를 통해 dht22와 라즈베리파이 연결 → 온습도 데이터 전송
 
