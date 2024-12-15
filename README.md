@@ -94,13 +94,13 @@ serv_sock 감시 → 들어오는 요청이 있다면 → 클라이언트 소켓
 
 DHT-22 온습도 데이터 센서 요청을 받아올 때 온습도 데이터가 받아지지 않아 상태코드 500 에러가 지속적으로 발생했습니다.
 
-<img src="https://github.com/user-attachments/assets/5a8fd171-72ad-48e1-ac80-717bf9be094d" width="500" height="400"/>
+<img src="https://github.com/user-attachments/assets/5a8fd171-72ad-48e1-ac80-717bf9be094d" width="800" height="400"/>
 
 **해결 방안 1** :  온습도 데이터를 보낼때 TCP Socket이 온습도 데이터를 지속적으로 보내고 있지 않아 발생했다고 생각했습니다. → 소켓 옵션에서 TCP_NODELAY 옵션을 활성화하여 nagle 알고리즘을 중단하고 보낼 데이터를 지연 없이 브라우저에게 바로 전송 하도록 설계하였습니다. → 하지만 현재 요청과 응답에서는 패킷 크기가 크기때문에 실질적으로 TCP_NODELAY 옵션 여부에 상관없이 즉시 전송되고 있었습니다.
 
 **해결 방안 2 :** 클라이언트-서버간 통신 문제가 아닌 dht-22에서 센서 문제가 있다고 생각했습니다. → DHT-22는 데이터 송수신시 데이터 타이밍이 매우 중요하기때문에 미세한 오차가 데이터 오류를 발생시키는 것을 확인했습니다. → 따라서 데이터 오류를 줄이기 위해 오류 발생시 재시도 함수를 추가하여 신뢰성을 개선하였습니다.
 
-<img src="https://github.com/user-attachments/assets/a943f8c0-8e44-4c37-9a3a-5b4fc58c4292" width="500" height="300"/>
+<img src="https://github.com/user-attachments/assets/a943f8c0-8e44-4c37-9a3a-5b4fc58c4292" width="400" height="200"/>
 
 <img src="https://github.com/user-attachments/assets/3234e03e-8685-469d-917e-780b72603b34" width="400" height="400"/>
 
