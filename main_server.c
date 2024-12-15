@@ -17,6 +17,7 @@
 
 void error_handling(char *message);
 void send_history(int cli_sock);
+void *client_handler(void *arg);
 
 int dht_val[5] = {0, 0, 0, 0, 0};
 
@@ -179,14 +180,20 @@ void send_history(int cli_sock) {
     close(cli_sock);
 }
 
+void *client_handler(void *arg) {
+    int cli_sock = *(int *)arg;
+    free(arg);
+    handle_client(cli_sock);
+    return NULL;
+}
+
 int main(void) {
     int serv_sock, cli_sock;
     struct sockaddr_in serv_addr, cli_addr;
     socklen_t cli_addr_len;
-    int max_fd, active, i;
-    int client_sockets[MAX_CLIENTS];
-    fd_set read_fds;
     int option = 1;
+    pthread_t t1;
+
     if (wiringPiSetup() == -1) {
         error_handling("wiringPiSetup() error");
     }
@@ -195,6 +202,7 @@ int main(void) {
     if(serv_sock==-1){
         error_handling("socket() error");
     }
+
     setsockopt(serv_sock, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
     
     memset(&serv_addr, 0x00, sizeof(serv_addr));
@@ -214,54 +222,19 @@ int main(void) {
 
     memset(client_sockets, 0, sizeof(client_sockets));
     while (1) {
-        FD_ZERO(&read_fds);
-        FD_SET(serv_sock, &read_fds); 
-        max_fd = serv_sock;
-        
-        for(i=0; i<MAX_CLIENTS; i++){
-            int sd = client_sockets[i];
-            if(sd>0){
-                FD_SET(sd, &read_fds);
-            }  
-            if(sd > max_fd){
-                max_fd = sd;
-            }
-        }
-
-        active = select(max_fd+1, &read_fds, 0, 0, 0);
-        if(active<0){
-            error_handling("select() error");
+        cli_addr_len = sizeof(cli_addr);
+        cli_sock = accept(serv_sock, (struct sockaddr*)&cli_addr, &cli_addr_len);
+        if (cli_sock == -1)
             continue;
-        }
-        
-        if(FD_ISSET(serv_sock, &read_fds)){
-            cli_addr_len = sizeof(cli_addr);
-            cli_sock = accept(serv_sock, (struct sockaddr*)&cli_addr, &cli_addr_len);
-            if(cli_sock==-1){
-                error_handling("accept() error");
-                continue;
-            }
 
-            printf("새로운 클라이언트 연결. client fd : %d, ip : %s, port : %d\n",
-                   cli_sock, inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port));
+        printf("새로운 클라이언트 연결: %s:%d\n", inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port));
 
-            for(i=0; i<MAX_CLIENTS; i++){
-                if(client_sockets[i]==0){
-                    client_sockets[i] = cli_sock;
-                    printf("클라이언트 소켓 [%d]에 추가됨\n", i);
-                    break;
-                }
-            }
-        }
+        int *new_sock = malloc(sizeof(int));
+        *new_sock = cli_sock;
 
-        for(i=0; i< MAX_CLIENTS; i++){
-            int sd = client_sockets[i];
-            
-            if(FD_ISSET(sd, &read_fds)){
-                handle_client(sd);
-                client_sockets[i] = 0;
-            }
-        }
+        pthread_create(&t1, NULL, client_handler, (void*)new_sock);
+        pthread_detach(t1);
+
     }
 
     close(serv_sock);
