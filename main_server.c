@@ -68,15 +68,15 @@ int read_dht22_data() {
     }
 }
 
-int read_dht22_data_with_retry(int max_retries) {
+int read_dht22_data_with_retry(int max_retries) { //재시도 횟수 받아서
     int success = 0;
     for (int attempt = 0; attempt < max_retries; attempt++) {
-        if (read_dht22_data()) {
-            success = 1;
+        if (read_dht22_data()) { //데이터를 성공적으로 읽었다면?
+            success = 1;    // 1 반환
             break;
         }
-        printf("센서 읽기 실패. 재시도 중 (%d/%d)\n", attempt + 1, max_retries);
-        delay(2000); 
+        printf("센서 읽기 실패. 재시도 중 (%d/%d)\n", attempt + 1, max_retries); //데이터 읽기 실패시 재시도 알림
+        delay(2000);  //2초 대기 후 다시 데이터 읽기
     }
     return success;
 }
