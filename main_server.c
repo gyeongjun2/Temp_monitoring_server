@@ -68,6 +68,19 @@ int read_dht22_data() {
     }
 }
 
+int read_dht22_data_with_retry(int max_retries) {
+    int success = 0;
+    for (int attempt = 0; attempt < max_retries; attempt++) {
+        if (read_dht22_data()) {
+            success = 1;
+            break;
+        }
+        printf("센서 읽기 실패. 재시도 중 (%d/%d)\n", attempt + 1, max_retries);
+        delay(2000); 
+    }
+    return success;
+}
+
 void handle_client(int cli_sock) {
     char buffer[BUF_SIZE];
     int valread = read(cli_sock, buffer, sizeof(buffer) - 1);
@@ -87,7 +100,7 @@ void handle_client(int cli_sock) {
         char html_content[BUF_SIZE];
         float humidity, temperature;
 
-        if (read_dht22_data()) {
+        if (read_dht22_data_with_retry(3)) {
             humidity = ((dht_val[0] << 8) + dht_val[1]) / 10.0;
             temperature = ((dht_val[2] << 8) + dht_val[3]) / 10.0;
 
